@@ -1,0 +1,9 @@
+/venv
+/.meltano
+.env
+data/
+
+# Secrets — never commit
+gcp-credentials.json
+*-credentials.json
+*.json.key
