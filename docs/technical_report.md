@@ -57,7 +57,7 @@ All 8 tables were successfully loaded into `olist-assignment-497915.olist_raw`:
 
 ### 1.5 Raw Data Observations
 
-Preliminary exploratory analysis (`notebooks/00_eda_raw_data.ipynb`) revealed the following, which downstream stages should account for:
+Preliminary exploratory analysis (`notebooks/eda_raw_data.ipynb`) revealed the following, which downstream stages should account for:
 
 - Timestamp columns are loaded as `STRING` type in BigQuery — these must be cast to `TIMESTAMP` in staging models.
 - `order_reviews`: `review_comment_title` and `review_comment_message` contain a high proportion of NULLs (expected, as these are optional fields).
