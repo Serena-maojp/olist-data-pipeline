@@ -1,0 +1,74 @@
+default_environment: dev
+project_id: 019e7d2f-82ef-7fc8-8b0c-77b410c72b18
+environments:
+- name: dev
+- name: staging
+- name: prod
+plugins:
+  extractors:
+  - name: tap-spreadsheets-anywhere
+    namespace: tap_spreadsheets_anywhere
+    pip_url: git+https://github.com/RFAInc/tap-spreadsheets-anywhere.git
+    executable: tap-spreadsheets-anywhere
+    config:
+      tables:
+      - path: file:///Users/jinping/Documents/data-learning/olist-data-pipeline/meltano-olist/data
+        name: orders
+        pattern: olist_orders_dataset.csv
+        start_date: "2000-01-01T00:00:00Z"
+        key_properties: [order_id]
+        format: csv
+      - path: file:///Users/jinping/Documents/data-learning/olist-data-pipeline/meltano-olist/data
+        name: customers
+        pattern: olist_customers_dataset.csv
+        start_date: "2000-01-01T00:00:00Z"
+        key_properties: [customer_id]
+        format: csv
+      - path: file:///Users/jinping/Documents/data-learning/olist-data-pipeline/meltano-olist/data
+        name: products
+        pattern: olist_products_dataset.csv
+        start_date: "2000-01-01T00:00:00Z"
+        key_properties: [product_id]
+        format: csv
+      - path: file:///Users/jinping/Documents/data-learning/olist-data-pipeline/meltano-olist/data
+        name: order_items
+        pattern: olist_order_items_dataset.csv
+        start_date: "2000-01-01T00:00:00Z"
+        key_properties: [order_id]
+        format: csv
+      - path: file:///Users/jinping/Documents/data-learning/olist-data-pipeline/meltano-olist/data
+        name: order_payments
+        pattern: olist_order_payments_dataset.csv
+        start_date: "2000-01-01T00:00:00Z"
+        key_properties: [order_id]
+        format: csv
+      - path: file:///Users/jinping/Documents/data-learning/olist-data-pipeline/meltano-olist/data
+        name: order_reviews
+        pattern: olist_order_reviews_dataset.csv
+        start_date: "2000-01-01T00:00:00Z"
+        key_properties: [review_id]
+        format: csv
+      - path: file:///Users/jinping/Documents/data-learning/olist-data-pipeline/meltano-olist/data
+        name: sellers
+        pattern: olist_sellers_dataset.csv
+        start_date: "2000-01-01T00:00:00Z"
+        key_properties: [seller_id]
+        format: csv
+      - path: file:///Users/jinping/Documents/data-learning/olist-data-pipeline/meltano-olist/data
+        name: category_translation
+        pattern: product_category_name_translation.csv
+        start_date: "2000-01-01T00:00:00Z"
+        key_properties: [product_category_name]
+        format: csv
+  loaders:
+  - name: target-bigquery
+    namespace: target_bigquery
+    pip_url: z3-target-bigquery
+    executable: target-bigquery
+    config:
+      project: $TARGET_BIGQUERY_PROJECT_ID
+      dataset: $TARGET_BIGQUERY_DATASET
+      location: $TARGET_BIGQUERY_LOCATION
+      credentials_path: $GOOGLE_APPLICATION_CREDENTIALS
+      method: batch_job
+      denormalized: true
