@@ -8,10 +8,14 @@ WITH staging_order_items AS (
 
 staging_orders AS (
     SELECT * FROM {{ ref('stg_orders') }}
+),
+
+staging_reviews AS (
+    SELECT * FROM {{ ref('stg_order_reviews') }}
 )
 
 SELECT
-    -- Primary Key for the Fact Table
+    -- Primary Key
     i.order_item_id AS order_item_sk,    
     
     -- Foreign Keys connecting to your Dimensions
@@ -20,14 +24,16 @@ SELECT
     i.seller_id AS seller_key,           
     o.customer_id AS customer_key,       
     
-    -- Formatting the timestamp into a string 'YYYYMMDD' to match dim_date
+    -- Convert order timestamp into a clean YYYYMMDD date key for dim_date
     CAST(FORMAT_DATE('%Y%m%d', DATE(o.order_purchase_timestamp)) AS STRING) AS date_key,
     
-    -- Your Facts (Measurable Numbers)
+    -- Measurable Facts
     i.price,
-    i.freight_value
+    i.freight_value,
+    r.review_score
 
 FROM staging_order_items i
--- We join the orders table to bring in the customer and date information!
 LEFT JOIN staging_orders o 
     ON i.order_id = o.order_id
+LEFT JOIN staging_reviews r 
+    ON i.order_id = r.order_id
