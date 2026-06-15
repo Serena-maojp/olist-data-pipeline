@@ -1,33 +1,136 @@
 # olist-data-pipeline
+
 Module 2 Assignment - ELT Pipeline with Olist Dataset
 
-## Setup
+## Overview
 
-1. Download the Olist dataset from Kaggle:
-   https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+This project implements an end-to-end ELT pipeline using:
 
-2. We are using the elt environment.yml setup for this project, run the below command on terminal first. 
+* Meltano (Data Ingestion)
+* Google BigQuery (Data Warehouse)
+* dbt (Transformations & Data Quality Testing)
+* Python & Pandas (Analytics)
+* Dagster (Pipeline Orchestration)
 
-```bash
-conda activate elt
+## Project Structure
+
+```text
+olist-data-pipeline/
+│
+├── meltano-olist/      # Data ingestion
+├── dbt_olist/          # Data warehouse & transformations
+├── notebooks/          # Analytics notebooks
+├── dagster-olist/      # Pipeline orchestration
+├── docs/               # Technical documentation
+├── slides/             # Presentation materials
+├── environment.yml
+└── README.md
 ```
 
-### Phase 1: Meltano 
+# Setup
 
-3. Place all the raw Olist CSV files in `meltano-olist/data/`
+## 1. Clone Repository
 
-4. Copy .env.example to .env and fill in your values:
-   - GCP Project ID
-   - Path to your local data folder
-   - Path to your GCP credentials JSON
+```bash
+git clone <repository-url>
+cd olist-data-pipeline
+```
 
-### Phase 2: dbt Warehousing -> dbt_olist folder 
+## 2. Create Environment
 
-5. Save JSON file for service authorization from GCP for your project, into a local folder, and copy the path to JSON file 
+Create and activate the Conda environment:
 
-6. Update profiles,yml file inside dbt folder 
+```bash
+conda env create -f environment.yml
+conda activate olist
+```
 
-```bash 
+# Phase 1: Data Ingestion (Meltano)
+
+## 3. Download Dataset
+
+Download the Olist dataset from Kaggle:
+
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+
+## 4. Place Raw Files
+
+Place all Olist CSV files into:
+
+```text
+meltano-olist/data/
+```
+
+Required files:
+
+```text
+olist_customers_dataset.csv
+olist_orders_dataset.csv
+olist_order_items_dataset.csv
+olist_order_payments_dataset.csv
+olist_order_reviews_dataset.csv
+olist_products_dataset.csv
+olist_sellers_dataset.csv
+product_category_name_translation.csv
+```
+
+## 5. Configure Environment Variables
+
+Inside the `meltano-olist` folder, run the below to create a .env file: 
+
+```bash
+cp .env.example .env
+```
+
+Update the following values:
+
+* GCP Project ID
+* Local data folder path
+* Service Account JSON path
+
+## 6. Run Meltano Ingestion
+
+Navigate to the Meltano directory:
+
+```bash
+cd meltano-olist
+```
+
+Install plugins:
+
+```bash
+meltano install
+```
+
+Run ingestion:
+
+```bash
+meltano run tap-spreadsheets-anywhere target-bigquery
+```
+
+Verify that raw tables are created in:
+
+```text
+olist_raw
+```
+
+within Google BigQuery.
+
+# Phase 2: Data Warehouse & Transformations (dbt)
+
+## 7. Save JSON file for service authorization from GCP for your project, into a local folder, and copy the path to JSON file 
+
+## 8. Configure dbt Profile
+
+Create or update:
+
+```text
+~/.dbt/profiles.yml
+```
+
+Example configuration:
+
+```yaml
 olist_data_pipeline:   # name of data set, must match what is on the dbt_project.yml file 
   outputs:
     dev:
@@ -44,9 +147,14 @@ olist_data_pipeline:   # name of data set, must match what is on the dbt_project
   target: dev # default 
 ```
 
-7. update dbt_project.yml (follow example below)
+## 9. Verify dbt Project Configuration
 
-```bash
+Ensure the following values match between:
+
+* `dbt_project.yml`
+* `profiles.yml`
+
+```yaml
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
@@ -83,16 +191,100 @@ models:
       +materialized: table or view 
 ```
 
-8. dbt commands to run staging and tests - ensure that all commands run successfully 
+## 10. Run dbt Models
+
+Navigate to:
 
 ```bash
+cd dbt_olist
+```
 
-dbt debug 
+Run the following commands:
 
+```bash
+dbt debug
+```
+
+```bash
 dbt parse
+```
 
-dbt run 
+```bash
+dbt run
+```
 
+```bash
 dbt test
 ```
 
+All commands should complete successfully.
+
+Expected output models:
+
+### Staging Models
+
+```text
+stg_customers
+stg_orders
+stg_order_items
+stg_payments
+stg_products
+stg_reviews
+stg_sellers
+```
+
+### Intermediate Models
+
+```text
+int_order_payments
+int_customer_orders
+```
+
+### Mart Models
+
+```text
+dim_customers
+dim_products
+dim_sellers
+dim_date
+fact_orders
+fct_customer_rfm
+```
+
+# Phase 4: Pipeline Orchestration (Dagster)
+
+Navigate to:
+
+```bash
+cd dagster-olist
+```
+
+Start Dagster:
+
+```bash
+dagster dev
+```
+
+Open the Dagster UI:
+
+- follow the link available within terminal or 
+
+```text
+http://localhost:3000
+```
+
+Execute the orchestration pipeline
+- click on each component 
+- click on "Materialize asset" 
+
+OR 
+
+- click on "Materialize all" 
+
+```text
+Meltano Ingestion
+        ↓
+dbt Run
+        ↓
+dbt Test
+```
