@@ -101,6 +101,7 @@ packages:
 version: [">=0.10.0", "<0.11.0"]
 dbt deps
 ---
+```
 4.4 Built-in Generic Tests (schema.yml) — 38 Tests
 ====================================================
 
