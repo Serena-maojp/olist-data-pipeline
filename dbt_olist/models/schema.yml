@@ -1,12 +1,9 @@
 version: 2
 
 models:
-<<<<<<< HEAD
-=======
   # ─────────────────────────────────────────────
   # STAGING LAYER
   # ─────────────────────────────────────────────
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
   - name: stg_customers
     description: Cleaned customer data from the Olist raw dataset.
     columns:
@@ -24,11 +21,6 @@ models:
         tests:
           - not_null
           - unique
-<<<<<<< HEAD
-      - name: customer_id
-        tests:
-          - not_null
-=======
           - dbt_expectations.expect_column_values_to_be_of_type:
               column_type: string
       - name: customer_id
@@ -42,7 +34,6 @@ models:
         tests:
           - dbt_expectations.expect_column_values_to_be_of_type:
               column_type: timestamp
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
 
   - name: stg_order_items
     description: Cleaned order item data with item price and freight value.
@@ -56,8 +47,6 @@ models:
       - name: seller_id
         tests:
           - not_null
-<<<<<<< HEAD
-=======
       - name: price
         tests:
           - dbt_expectations.expect_column_values_to_be_between:
@@ -68,7 +57,6 @@ models:
           - dbt_expectations.expect_column_values_to_be_between:
               min_value: 0
               strictly: false
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
 
   - name: stg_payments
     description: Cleaned payment data used to calculate order revenue.
@@ -79,8 +67,6 @@ models:
       - name: payment_value
         tests:
           - not_null
-<<<<<<< HEAD
-=======
           - dbt_expectations.expect_column_values_to_be_between:
               min_value: 0
               max_value: 100000
@@ -94,7 +80,6 @@ models:
           - dbt_expectations.expect_column_values_to_be_between:
               min_value: 0
               max_value: 24
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
 
   - name: stg_products
     description: Cleaned product data.
@@ -103,8 +88,6 @@ models:
         tests:
           - not_null
           - unique
-<<<<<<< HEAD
-=======
       - name: product_weight_g
         tests:
           - dbt_expectations.expect_column_values_to_be_between:
@@ -112,7 +95,6 @@ models:
               strictly: true
               config:
                 severity: warn
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
 
   - name: stg_sellers
     description: Cleaned seller data.
@@ -131,11 +113,6 @@ models:
       - name: order_id
         tests:
           - not_null
-<<<<<<< HEAD
-
-  - name: dim_customers
-    description: Customer dimension table for the star schema.
-=======
       - name: review_score
         tests:
           - dbt_expectations.expect_column_values_to_be_between:
@@ -151,19 +128,15 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 90000
           max_value: 110000
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
     columns:
       - name: customer_key
         tests:
           - not_null
           - unique
-<<<<<<< HEAD
-=======
       - name: customer_state
         tests:
           - dbt_expectations.expect_column_value_lengths_to_equal:
               value: 2
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
 
   - name: dim_products
     description: Product dimension table for the star schema.
@@ -175,23 +148,15 @@ models:
 
   - name: dim_sellers
     description: Seller dimension table for the star schema.
-<<<<<<< HEAD
-=======
     tests:
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 3000
           max_value: 4000
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
     columns:
       - name: seller_key
         tests:
           - not_null
           - unique
-<<<<<<< HEAD
-
-  - name: dim_date
-    description: Date dimension table for time-based analysis.
-=======
       - name: seller_state
         tests:
           - dbt_expectations.expect_column_value_lengths_to_equal:
@@ -202,17 +167,11 @@ models:
     tests:
       - dbt_expectations.expect_table_row_count_to_equal:
           value: 1096
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
     columns:
       - name: date_key
         tests:
           - not_null
           - unique
-<<<<<<< HEAD
-
-  - name: fact_orders
-    description: Order-item level fact table connected to customer, product, seller, and date dimensions.
-=======
           - dbt_expectations.expect_column_value_lengths_to_equal:
               value: 8
           - dbt_expectations.expect_column_values_to_match_regex:
@@ -246,62 +205,38 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 100000
           max_value: 130000
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
     columns:
       - name: order_item_sk
         tests:
           - not_null
           - unique
-<<<<<<< HEAD
-
       - name: order_key
         tests:
           - not_null
-
-=======
-      - name: order_key
-        tests:
-          - not_null
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
       - name: customer_key
         tests:
           - not_null
           - relationships:
               to: ref('dim_customers')
               field: customer_key
-<<<<<<< HEAD
-
-=======
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
       - name: product_key
         tests:
           - not_null
           - relationships:
               to: ref('dim_products')
               field: product_key
-<<<<<<< HEAD
-
-=======
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
       - name: seller_key
         tests:
           - not_null
           - relationships:
               to: ref('dim_sellers')
               field: seller_key
-<<<<<<< HEAD
-
-=======
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
       - name: date_key
         tests:
           - not_null
           - relationships:
               to: ref('dim_date')
               field: date_key
-<<<<<<< HEAD
-
-=======
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: "^(2016|2017|2018)(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$"
       - name: price
@@ -321,7 +256,6 @@ models:
   # ─────────────────────────────────────────────
   # INTERMEDIATE LAYER
   # ─────────────────────────────────────────────
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
   - name: int_order_payments
     description: Order-level payment aggregation used to calculate revenue.
     columns:
@@ -332,8 +266,6 @@ models:
       - name: order_revenue
         tests:
           - not_null
-<<<<<<< HEAD
-=======
           - dbt_expectations.expect_column_values_to_be_between:
               min_value: 0
               strictly: true
@@ -341,7 +273,6 @@ models:
               quantile: 0.5
               min_value: 50
               max_value: 200
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
 
   - name: int_customer_orders
     description: Customer order history combining customers, orders, and payment revenue.
@@ -352,14 +283,6 @@ models:
       - name: order_id
         tests:
           - not_null
-<<<<<<< HEAD
-      - name: order_revenue
-        tests:
-          - not_null
-
-  - name: fct_customer_rfm
-    description: Customer-level RFM mart for repeat-buyer, churn-risk, and customer-segment analysis.
-=======
       - name: order_status
         tests:
           - dbt_expectations.expect_column_values_to_be_in_set:
@@ -380,7 +303,6 @@ models:
       - dbt_expectations.expect_table_row_count_to_be_between:
           min_value: 90000
           max_value: 100000
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
     columns:
       - name: customer_unique_id
         tests:
@@ -389,17 +311,6 @@ models:
       - name: recency_days
         tests:
           - not_null
-<<<<<<< HEAD
-      - name: frequency
-        tests:
-          - not_null
-      - name: monetary_value
-        tests:
-          - not_null
-      - name: customer_segment
-        tests:
-          - not_null
-=======
           - dbt_expectations.expect_column_values_to_be_between:
               min_value: 0
               max_value: 800
@@ -446,4 +357,3 @@ models:
         tests:
           - dbt_expectations.expect_column_values_to_be_in_set:
               value_set: [true, false]
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506

@@ -227,7 +227,6 @@ models:
       +materialized: table or view 
 ```
 
-<<<<<<< HEAD
 ## 10. Run dbt Models
 
 Navigate to:
@@ -325,18 +324,3 @@ dbt Run
         ↓
 dbt Test
 ```
-=======
-8. dbt commands to run staging and tests - ensure that all commands run successfully 
-
-```bash
-
-dbt debug 
-
-dbt parse
-
-dbt run 
-
-dbt test
-```
-
->>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
