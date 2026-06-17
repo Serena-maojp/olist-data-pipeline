@@ -4,11 +4,19 @@ olist_data_pipeline:
       dataset: olist_dwh
       job_execution_timeout_seconds: 300
       job_retries: 1
+<<<<<<< HEAD
       keyfile: /Users/balkis/Downloads/olist-assignment-497915-68366c85f98f.json
+=======
+      keyfile: /../<name of service auth file>.json
+>>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
       location: US
       method: service-account
       priority: interactive
       project: olist-assignment-497915
       threads: 4
       type: bigquery
+<<<<<<< HEAD
   target: dev
+=======
+  target: dev
+>>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506

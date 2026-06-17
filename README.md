@@ -1,9 +1,15 @@
 # olist-data-pipeline
 
 Module 2 Assignment - ELT Pipeline with Olist Dataset
+<<<<<<< HEAD
+=======
+
+## Setup
+>>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
 
 ## Overview
 
+<<<<<<< HEAD
 This project implements an end-to-end ELT pipeline using:
 
 * Meltano (Data Ingestion)
@@ -131,6 +137,30 @@ Create or update:
 Example configuration:
 
 ```yaml
+=======
+2. We are using the elt environment.yml setup for this project, run the below command on terminal first. 
+
+```bash
+conda activate elt
+```
+
+### Phase 1: Meltano 
+
+3. Place all the raw Olist CSV files in `meltano-olist/data/`
+
+4. Copy .env.example to .env and fill in your values:
+   - GCP Project ID
+   - Path to your local data folder
+   - Path to your GCP credentials JSON
+
+### Phase 2: dbt Warehousing -> dbt_olist folder 
+
+5. Save JSON file for service authorization from GCP for your project, into a local folder, and copy the path to JSON file 
+
+6. Update profiles,yml file inside dbt folder 
+
+```bash 
+>>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
 olist_data_pipeline:   # name of data set, must match what is on the dbt_project.yml file 
   outputs:
     dev:
@@ -147,6 +177,7 @@ olist_data_pipeline:   # name of data set, must match what is on the dbt_project
   target: dev # default 
 ```
 
+<<<<<<< HEAD
 ## 9. Verify dbt Project Configuration
 
 Ensure the following values match between:
@@ -155,6 +186,11 @@ Ensure the following values match between:
 * `profiles.yml`
 
 ```yaml
+=======
+7. update dbt_project.yml (follow example below)
+
+```bash
+>>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
@@ -191,6 +227,7 @@ models:
       +materialized: table or view 
 ```
 
+<<<<<<< HEAD
 ## 10. Run dbt Models
 
 Navigate to:
@@ -288,3 +325,18 @@ dbt Run
         ↓
 dbt Test
 ```
+=======
+8. dbt commands to run staging and tests - ensure that all commands run successfully 
+
+```bash
+
+dbt debug 
+
+dbt parse
+
+dbt run 
+
+dbt test
+```
+
+>>>>>>> cbf3ad2db750e394ec0f80cbdc5d47264859e506
