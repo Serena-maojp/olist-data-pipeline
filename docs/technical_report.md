@@ -647,7 +647,7 @@ Based on the segmentation results, three recommendations were prioritised for th
 | `olist_monthly_sales.csv` | Exported monthly revenue and order counts |
 | `olist_top_products.csv` | Exported top 15 categories by revenue |
 | `olist_rfm_segments.csv` | Exported customer-level RFM scores and segments |
-| `olist_rfm_slides.pptx` | 4-slide stakeholder presentation deck |
+
 
 
 *Sections 2–7 to be completed by others*
