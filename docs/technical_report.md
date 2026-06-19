@@ -735,10 +735,8 @@ This phase reads exclusively from the `olist_dwh` mart layer built in Section 3 
 | `dim_customers` | Customer unique IDs for grouping |
 | `dim_date` | Year/month grouping for time-series analysis |
 | `dim_products` | Category names for product analysis |
-<!--| `fct_customer_rfm` | Pre-computed RFM scores and segment labels (see Section 3.5 / 4.5) |-->
 
-
-Note: RFM recency, frequency, monetary value, and segment labels are **not recalculated in Python**. They are computed once in the `fct_customer_rfm` dbt model (Section 3) and validated by the dbt-expectations RFM test suite (Section 4.5). This phase queries that mart directly to avoid duplicating segmentation logic in two places, ensuring the numbers shown in the analysis and the numbers validated by the test suite are guaranteed to match.
+Note: RFM (Recency, Frequency, Monetary) scores and segment labels are calculated natively in pandas during this analysis phase. By pulling the raw transaction history from `fact_orders` and grouping by `dim_customers`, we ensure the core data warehouse remains lightweight while allowing analysts the flexibility to tune segmentation thresholds dynamically in Python.
 
 ### 5.4 Analyses Performed
 
@@ -772,15 +770,10 @@ Revenue rank and items-sold rank do not align — Bed, Bath & Table sells the mo
 
 #### 5.4.3 Customer Segmentation by Purchase Behaviour
 
-#### 5.4.3 Customer Segmentation by Purchase Behaviour
-
 **Business question:** Which customers are most valuable, at-risk, or likely to churn?
 
 To answer this, we calculated the RFM (Recency, Frequency, Monetary) metrics natively in Python using the `pandas` library. By querying the transaction-level data from the `fact_orders` table and grouping it by `customer_unique_id`, we computed the days since the last purchase (Recency), the total number of distinct orders (Frequency), and the total lifetime spend (Monetary Value). A scoring algorithm was then applied in Python to assign each customer to a specific behavioral segment based on these distributions.
 
-<!--**Business question:** Which customers are most valuable, at-risk, or likely to churn?-->
-
-<!--This analysis queries the pre-built `fct_customer_rfm` mart (Section 3.5) rather than recalculating RFM in Python. Each customer carries a `recency_days`, `frequency`, `monetary_value`, and `customer_segment` label, all validated by the dbt-expectations test suite (Section 4.5) prior to analysis.-->
 
 | Segment | Customers | % of Total | Total Revenue | Avg Spend |
 |---|---|---|---|---|
@@ -823,7 +816,6 @@ Based on the segmentation results, three recommendations were prioritised for th
 | Use SQLAlchemy instead of the native `google-cloud-bigquery` client directly | Matches the assignment specification and keeps query logic portable if the warehouse backend changes |
 | Authenticate via service account key rather than `gcloud` ADC login | Simpler to distribute across team members without individual GCP CLI setup |
 | Calculate RFM natively in pandas using `fact_orders` | Keeps the core SQL data warehouse lightweight and avoids hardcoding business logic into the database. This gives the analytics team the flexibility to dynamically adjust RFM scoring thresholds and experiment with different segment definitions in Python without needing to rebuild the upstream ELT pipeline. |
-<!--| Query `fct_customer_rfm` instead of recalculating RFM in pandas | Avoids duplicating segmentation logic; guarantees consistency with the dbt-expectations test suite in Section 4.5 |-->
 | Translate Portuguese category names to English in the notebook, not in dbt | Translation is presentation-layer only and does not affect upstream modelling or tests |
 | Replace the R×F heatmap with a bubble chart | Heatmap required the audience to cross-reference a numeric grid; the bubble chart communicates the same insight (recency vs. value) more intuitively for a non-technical audience |
 
