@@ -284,7 +284,7 @@ WHERE o.order_id IS NOT NULL
 ```
 
 
-## 2.4 Deployment & Testing
+## 2.6 Deployment & Testing
 
 To materialize this architecture in our production BigQuery environment, the following execution plan was executed via the terminal:
 
@@ -836,3 +836,44 @@ While pipeline orchestration via tools like Dagster was considered, it was scope
 
 
 ---
+
+## 7. Architecture Overview
+
+To support the analytics goals of this project, we designed a modern, decoupled data stack. The pipeline follows an ELT (Extract, Load, Transform) architecture, ensuring that raw data is safely preserved before being molded into a query-optimized star schema.
+
+The diagram below illustrates the end-to-end flow of data from the original Kaggle CSV files through to the final Python-driven business insights:
+
+```mermaid
+flowchart LR
+    subgraph Phase 1: Data Ingestion
+        Source[(Olist Kaggle CSVs)] -->|Extract| Meltano[Meltano]
+        Meltano -->|Load| RawBQ[(BigQuery: olist_raw)]
+    end
+
+    subgraph Phase 3: ELT & Data Warehouse
+        RawBQ -->|Clean & Model| DBT[dbt Core]
+        DBT -->|Materialize Star Schema| DWHBQ[(BigQuery: olist_dwh)]
+    end
+
+    subgraph Phase 5: Analysis & BI
+        DWHBQ -->|SQLAlchemy| Python[Python / Pandas]
+        Python -->|RFM Segmentation| Insights([Executive Slide Deck])
+    end
+    
+    %% Styling to make it look professional
+    style Source fill:#f9f,stroke:#333,stroke-width:2px
+    style Meltano fill:#ff9,stroke:#333,stroke-width:2px
+    style RawBQ fill:#bbf,stroke:#333,stroke-width:2px
+    style DBT fill:#f96,stroke:#333,stroke-width:2px
+    style DWHBQ fill:#bbf,stroke:#333,stroke-width:2px
+    style Python fill:#cfc,stroke:#333,stroke-width:2px
+    style Insights fill:#eee,stroke:#333,stroke-width:2px
+```
+
+**Key Architectural Benefits:**
+
+- **Decoupled Compute & Storage:** Using BigQuery as the central hub allows Meltano, dbt, and Python to operate independently without fighting for resources.
+
+- **Idempotency:** Because transformations happen inside BigQuery via dbt, the pipeline can be re-run at any time without duplicating data.
+
+- **Accessibility:** Connecting Python directly to the cleaned olist_dwh mart ensures analysts do not waste time cleaning raw data and can focus purely on executing business logic (like RFM segmentation).
