@@ -841,7 +841,7 @@ While pipeline orchestration via tools like Dagster was considered, it was scope
 
 To support the analytics goals of this project, we designed a modern, decoupled data stack. The pipeline follows an ELT (Extract, Load, Transform) architecture, ensuring that raw data is safely preserved before being molded into a query-optimized star schema.
 
-The diagram below illustrates the end-to-end flow of data from the original Kaggle CSV files through to the final Python-driven business insights:
+The diagram below illustrates the end-to-end architecture diagram from the original Kaggle CSV files through to the final Python-driven business insights:
 
 ```mermaid
 flowchart LR
@@ -877,3 +877,10 @@ flowchart LR
 - **Idempotency:** Because transformations happen inside BigQuery via dbt, the pipeline can be re-run at any time without duplicating data.
 
 - **Accessibility:** Connecting Python directly to the cleaned olist_dwh mart ensures analysts do not waste time cleaning raw data and can focus purely on executing business logic (like RFM segmentation).
+
+### 7.1 Pipeline data flow diagram
+![Olist Pipeline Data Flow Diagram](data_flow_pipeline.png)
+
+
+
+---
