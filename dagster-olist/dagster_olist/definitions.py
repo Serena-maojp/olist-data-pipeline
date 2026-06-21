@@ -1,10 +1,11 @@
-from dagster import Definitions, define_asset_job, ScheduleDefinition
+from dagster import Definitions, ScheduleDefinition, define_asset_job
 
 from dagster_olist.assets import (
-    meltano_ingestion,
     dbt_dependencies,
     dbt_run,
     dbt_test,
+    looker_studio_dashboard,
+    meltano_ingestion,
 )
 
 
@@ -15,13 +16,16 @@ olist_pipeline_job = define_asset_job(
         "dbt_dependencies",
         "dbt_run",
         "dbt_test",
+        "looker_studio_dashboard",
     ],
 )
+
 
 daily_olist_schedule = ScheduleDefinition(
     job=olist_pipeline_job,
     cron_schedule="0 9 * * *",
 )
+
 
 defs = Definitions(
     assets=[
@@ -29,6 +33,7 @@ defs = Definitions(
         dbt_dependencies,
         dbt_run,
         dbt_test,
+        looker_studio_dashboard,
     ],
     jobs=[olist_pipeline_job],
     schedules=[daily_olist_schedule],
